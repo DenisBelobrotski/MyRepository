@@ -1,0 +1,7 @@
+DENIS@DENISS_PC MINGW64 ~/Desktop/MyRepository (master)
+$ git log
+commit b53e290e9a07d38bdf00918602aab14396a7906d
+Author: Denis Belobrotski <belobrotskiy@gmail.com>
+Date:   Tue Feb 7 11:51:20 2017 +0300
+
+    add .gitignore
