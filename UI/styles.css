@@ -15,6 +15,7 @@ legend, table, caption, tbody, tfoot, thead, tr, th, td, header, nav, article, a
 }
 
 /* TYPOGRAPHY */
+
 html {
     background-color: rgba(25, 24, 33, 0.1);
 }
@@ -26,9 +27,6 @@ body {
     text-align: justify;
 }
 
-/*p { margin-bottom: 18px }
-strong { font-weight: bold }
-em { font-style: italic }*/
 a {
     color: #444444
 }
@@ -46,6 +44,7 @@ h1 {
 }
 
 /* HEADER */
+
 header {
     background-color: #92d36e;
     border-radius: 10px 10px 10px 10px;
@@ -77,6 +76,7 @@ hgroup h2 {
 }
 
 /*User*/
+
 div#user {
     float: right;
     width: 300px;
@@ -110,6 +110,7 @@ div#name p {
 }
 
 /* Navigation */
+
 nav#global {
     margin: 0 0 40px;
     width: 100%;
@@ -146,20 +147,32 @@ nav#global ul li a:hover {
 
 /*MAIN*/
 
-#content {
+div#content {
     width: 630px;
     margin-right: 30px;
-    /*float: left;*/
+    color: #444444;
+}
+
+div#content header {
+    padding: 15px;
+}
+
+div#content article {
+    padding-bottom: 20px;
+}
+
+div#content p {
+    padding: 15px;
 }
 
 .date {
-    float: left;
-    /*text-align: right;*/
     width: 170px;
-    height: 40px;
+    height: 30px;
     font-size: 16px;
+    font-style: italic;
 
 }
+
 .clearfix:after {
     visibility: hidden;
     display: block;
@@ -167,4 +180,44 @@ nav#global ul li a:hover {
     content: " ";
     clear: both;
     height: 0;
+}
+
+.newLine {
+    display: block
+}
+
+footer p {
+    margin: 0
+}
+
+.tags {
+    padding: 0 3px;
+    margin-right: 3px;
+    font-variant: small-caps;
+    font-size: 14px;
+    border-radius: 3px;
+}
+
+.tags:hover {
+    box-shadow: inset 100px 100px 120px #689e4f;
+    color: #ffffff;
+    border: none;
+}
+
+.button {
+    font-size: 14px;
+    display: block;
+    width: 100px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    line-height: 30px;
+    padding: 0 25px;
+
+    background: #92d36e;
+}
+
+.button:hover {
+    border: none;
+    box-shadow: inset 100px 100px 120px #689E4F;
+    color: #fff;
 }
