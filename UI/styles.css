@@ -1,5 +1,7 @@
 @charset "UTF-8";
-/* RESET */
+
+/*RESET*/
+
 html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, address, cite, code, del,
 dfn, em, font, img, ins, kbd, q, samp, small, strong, sub, sup, var, dl, dt, dd, ol, ul, li, fieldset, form, label,
 legend, table, caption, tbody, tfoot, thead, tr, th, td, header, nav, article, aside, footer, hgroup, section {
@@ -14,7 +16,7 @@ legend, table, caption, tbody, tfoot, thead, tr, th, td, header, nav, article, a
     text-decoration: none;
 }
 
-/* TYPOGRAPHY */
+/*TYPOGRAPHY*/
 
 html {
     background-color: rgba(25, 24, 33, 0.1);
@@ -43,7 +45,7 @@ h1 {
     font: 24px/36px Arial, Helvetica, sans-serif
 }
 
-/* HEADER */
+/*HEADER*/
 
 header {
     background-color: #92d36e;
@@ -75,7 +77,7 @@ hgroup h2 {
     color: #606060;
 }
 
-/*User*/
+/*USER*/
 
 div#user {
     float: right;
@@ -98,7 +100,6 @@ div#name {
     float: right;
     width: 200px;
     height: 30px;
-
 }
 
 div#name p {
@@ -109,7 +110,7 @@ div#name p {
     color: #444444;
 }
 
-/* Navigation */
+/*NAVIGATION*/
 
 nav#global {
     margin: 0 0 40px;
@@ -145,16 +146,21 @@ nav#global ul li a:hover {
     box-shadow: inset 100px 100px 120px #77b159;
 }
 
-/*MAIN*/
+/*Main*/
 
 div#content {
     width: 630px;
     margin-right: 30px;
     color: #444444;
+    float: left;
 }
 
 div#content header {
     padding: 15px;
+}
+
+div#content header h1 {
+    line-height: 25px;
 }
 
 div#content article {
@@ -166,11 +172,11 @@ div#content p {
 }
 
 .date {
-    width: 170px;
+    width: 300px;
     height: 30px;
     font-size: 16px;
     font-style: italic;
-
+    padding-top: 15px;
 }
 
 .clearfix:after {
@@ -212,12 +218,106 @@ footer p {
     text-transform: uppercase;
     line-height: 30px;
     padding: 0 25px;
-
     background: #92d36e;
+    text-align: center;
 }
 
 .button:hover {
     border: none;
     box-shadow: inset 100px 100px 120px #689E4F;
     color: #fff;
+}
+
+/*Filters*/
+
+aside {
+    width: 260px;
+    float: right;
+    background: rgba(211, 251, 203, 0.4);
+    margin-bottom: 30px;
+    padding: 20px;
+    border-radius: 10px;
+    position: relative;
+    -webkit-box-shadow: 0 0 20px #77b159;
+
+}
+
+aside h1 {
+    font-size: 18px;
+    line-height: 28px;
+    height: 28px;
+    margin-bottom: 10px;
+    background: -webkit-linear-gradient(top, #92d36e 0%, #77b159 100%);
+    color: #fff;
+    padding: 0 10px;
+    border: none;
+    border-radius: 10px;
+}
+
+section span {
+    font-size: 14px;
+    line-height: 25px;
+    display: block;
+}
+
+section {
+    margin: 10px 30px;
+    color: #444444;
+}
+
+section h2 {
+    font-size: 14px;
+    line-height: 25px;
+}
+
+section#dateFilter span input {
+    float: right;
+}
+
+section#authorNameFilter span input {
+    width: 100%;
+}
+
+section#tagsFilter span input {
+    width: 100%;
+}
+
+.authors {
+    padding: 0 3px;
+    margin-right: 3px;
+    font-size: 14px;
+    border-radius: 3px;
+}
+
+.authors:hover {
+     box-shadow: inset 100px 100px 120px #689e4f;
+     color: #ffffff;
+     border: none;
+ }
+
+.smallButton {
+    font-size: 14px;
+    display: block;
+    width: 80px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    line-height: 25px;
+    padding: 0 25px;
+    background: #92d36e;
+    text-align: center;
+    margin: 10px 0;
+}
+
+.smallButton:hover {
+    border: none;
+    box-shadow: inset 100px 100px 120px #689E4F;
+    color: #fff;
+}
+
+/*FOOTER*/
+
+.copyright {
+    text-align: center;
+    margin: 10px 0 30px;
+    clear: both;
 }
