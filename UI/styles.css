@@ -282,18 +282,26 @@ section#tagsFilter span input {
     width: 100%;
 }
 
-.authors {
+ul.authors li {
+    margin-left: 15px;
+}
+
+ul.authors li a {
     padding: 0 3px;
     margin-right: 3px;
     font-size: 14px;
     border-radius: 3px;
 }
 
-.authors:hover {
-     box-shadow: inset 100px 100px 120px #689e4f;
-     color: #ffffff;
-     border: none;
- }
+ul.authors li a:hover {
+    box-shadow: inset 100px 100px 120px #689e4f;
+    color: #ffffff;
+    border: none;
+}
+
+.tagsList {
+    margin-left: 15px;
+}
 
 .smallButton {
     font-size: 14px;
@@ -312,6 +320,28 @@ section#tagsFilter span input {
     border: none;
     box-shadow: inset 100px 100px 120px #689E4F;
     color: #fff;
+}
+
+/* Paginator */
+
+.paginator {
+    width: 300px;
+    padding: 10px;
+    margin: auto;
+}
+
+.paginator a,
+.paginator span {
+    display: inline-block;
+    height: 20px;
+    padding: 0 5px;
+    border-radius: 5px;
+}
+
+.paginator a:hover {
+    box-shadow: inset 100px 100px 120px #689e4f;
+    color: #ffffff;
+    border: none;
 }
 
 /*FOOTER*/
