@@ -79,7 +79,7 @@ hgroup h2 {
 
 /*USER*/
 
-div#user {
+.user {
     float: right;
     width: 300px;
     height: 90px;
@@ -89,20 +89,20 @@ div#user {
     -webkit-box-shadow: 0 0 20px #77b159;
 }
 
-img#avatar {
+.avatar {
     height: 80px;
     width: 80px;
     margin: 5px;
 }
 
-div#name {
+.name {
     margin: 30px 5px;
     float: right;
     width: 200px;
     height: 30px;
 }
 
-div#name p {
+.name p {
     font: 20px/30px Arial, Helvetica, sans-serif;
     white-space: nowrap;
     overflow: hidden;
@@ -112,26 +112,26 @@ div#name p {
 
 /*NAVIGATION*/
 
-nav#global {
+.global {
     margin: 0 0 40px;
     width: 100%;
     border-radius: 0 0 10px 10px;
     background: -webkit-linear-gradient(top, #92d36e 0%, #77b159 100%);
 }
 
-nav#global ul {
+.global ul {
     text-align: center;
     height: 40px;
     margin: 0 auto;
     display: table;
 }
 
-nav#global ul li {
+.global ul li {
     position: relative;
     display: inline;
 }
 
-nav#global ul li a {
+.global ul li a {
     font-size: 14px;
     display: block;
     float: left;
@@ -141,33 +141,34 @@ nav#global ul li a {
     color: #fff;
 }
 
-nav#global ul li a:hover {
+.global ul li a:hover {
     border: none;
     box-shadow: inset 100px 100px 120px #77b159;
 }
 
 /*Main*/
 
-div#content {
+.content {
     width: 630px;
     margin-right: 30px;
     color: #444444;
     float: left;
 }
 
-div#content header {
+.content header {
     padding: 15px;
 }
 
-div#content header h1 {
-    line-height: 25px;
+.content header h2 {
+    font: 24px/24px Arial, Helvetica, sans-serif;
+
 }
 
-div#content article {
+.content article {
     padding-bottom: 20px;
 }
 
-div#content p {
+.content p {
     padding: 15px;
 }
 
@@ -242,7 +243,7 @@ aside {
 
 }
 
-aside h1 {
+aside h2 {
     font-size: 18px;
     line-height: 28px;
     height: 28px;
@@ -265,35 +266,35 @@ section {
     color: #444444;
 }
 
-section h2 {
+section h3 {
     font-size: 14px;
     line-height: 25px;
 }
 
-section#dateFilter span input {
+.dateFilter span input {
     float: right;
 }
 
-section#authorNameFilter span input {
+.authorNameFilter span input {
     width: 100%;
 }
 
-section#tagsFilter span input {
+.tagsFilter span input {
     width: 100%;
 }
 
-ul.authors li {
+.authors li {
     margin-left: 15px;
 }
 
-ul.authors li a {
+.authors li a {
     padding: 0 3px;
     margin-right: 3px;
     font-size: 14px;
     border-radius: 3px;
 }
 
-ul.authors li a:hover {
+.authors li a:hover {
     box-shadow: inset 100px 100px 120px #689e4f;
     color: #ffffff;
     border: none;
