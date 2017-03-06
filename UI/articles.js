@@ -23,7 +23,7 @@ var articles = [
         summary: "Временный имиграционный запрет в США продолжает генерировать казусы и курьезы на границе Штатов " +
         "и в международных аэропортах страны.",
         createdAt: new Date(2017, 2, 2, 11, 59),
-        author: "DenisBelobrotski",
+        author: "DenisBelobrotskiy",
         tags: ["курьезы"],
         content: "Временный имиграционный запрет в США продолжает генерировать казусы и курьезы на границе Штатов " +
         "и в международных аэропортах страны. Так, нигерийского «айтишника», который летел в США по делам, в аэропорту " +
@@ -62,7 +62,7 @@ var articles = [
         summary: "В Канаде группой ученых были обнаружены древнейшие из ныне известных ископаемых микроорганизмов. " +
         "Их нашли в самых древних скалах Земли у поселения Нуввуагиттук.",
         createdAt: new Date(2017, 2, 2, 14, 35),
-        author: "DenisBelobrotski",
+        author: "DenisBelobrotskiy",
         tags: ["тенденции"],
         content: "В Канаде группой ученых были обнаружены древнейшие из ныне известных ископаемых микроорганизмов. " +
         "Их нашли в самых древних скалах Земли у поселения Нуввуагиттук. Возраст этих пород оценивают в 3,7—4,3 " +
@@ -168,7 +168,8 @@ var articles = [
     {
         id: "10",
         title: "СМИ: в России создали лекарство от всех видов рака",
-        summary: "Российские СМИ сообщили о завершении доклинических испытаний лекарства, которой способно совершить революцию в онкологии.",
+        summary: "Российские СМИ сообщили о завершении доклинических испытаний лекарства, которой способно совершить " +
+        "революцию в онкологии.",
         createdAt: new Date(2017, 2, 3, 10, 6),
         author: "DenisBelobrotski",
         tags: ["медицина"],
@@ -462,3 +463,189 @@ var tags = [
     "космос", "тенденции", "технологии", "курьезы", "nokia", "apple", "слухи", "смартфоны", "bitcoin", "социальные сети",
     "медицина", "mwc", "sony", "lenovo", "motorola", "умные часы"
 ];
+
+function getArticles(skip, top, filterConfig) {
+    var resultArticles = articles;
+    var from = skip || 0;
+    var amount = top || 10;
+    if (filterConfig != undefined) {
+        if (filterConfig.dateFrom != undefined) {
+            resultArticles = resultArticles.filter(function (currentElement) {
+                return currentElement.createdAt.getTime() >= filterConfig.dateFrom.getTime();
+            })
+        }
+        if (filterConfig.dateTo != undefined) {
+            resultArticles = resultArticles.filter(function (currentElement) {
+                return currentElement.createdAt.getTime() <= filterConfig.dateTo.getTime();
+            })
+        }
+        if (filterConfig.author != undefined) {
+            resultArticles = resultArticles.filter(function (currentElement) {
+                return currentElement.author == filterConfig.author;
+            })
+        }
+        if (filterConfig.tags != undefined && filterConfig.tags.length != 0) {
+            resultArticles = resultArticles.filter(function (currentElement) {
+                return filterConfig.tags.every(function (tag) {
+                    return currentElement.tags.indexOf(tag) >= 0;
+                })
+            })
+        }
+    }
+    return resultArticles.slice(from, from + amount);
+}
+
+function getArticle(findId) {
+    return articles.filter(function (currentElement) {
+        return currentElement.id == findId;
+    })[0];
+}
+
+function validateArticle(article) {
+    if (article.title != undefined && (article.title.length == 0 || article.title.length > 100)) {
+        return false;
+    } else if (article.summary != undefined && (article.summary.length == 0 || article.summary.length > 200)) {
+        return false;
+    } else if (articles.tags != undefined && (article.tags.length == 0 || article.tags.length > 5)) {
+        return false;
+    } else if (article.tags != undefined && !article.tags.every(function (tag) {
+            return tags.indexOf(tag) >= 0;
+        })) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function addArticle(article) {
+    var prevSize = articles.length;
+    if(!validateArticle(article)) {
+        return false;
+    } else if(prevSize == articles.push(article)) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function editArticle(editId, newArticle) {
+    var editIndex = articles.indexOf(getArticle(editId));
+    if(!validateArticle(newArticle) || editIndex < 0) {
+        return false;
+    }
+    if (newArticle.title != undefined) {
+        articles[editIndex].title = newArticle.title;
+    }
+    if (newArticle.summary != undefined) {
+        articles[editIndex].summary = newArticle.summary;
+    }
+    if (newArticle.tags != undefined) {
+        articles[editIndex].tags = newArticle.tags;
+    }
+    if (newArticle.content != undefined) {
+        articles[editIndex].content = newArticle.content;
+    }
+    return true;
+}
+
+function removeArticle(removeId) {
+    var removeIndex = articles.indexOf(getArticle(removeId));
+    if (removeIndex != -1) {
+        articles.splice(removeIndex, 1);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+var testArticle1 = {
+    id: "21",
+    title: "aaaaaaaaaaaaaaaaaaaaaa",
+    summary: "aaaaa",
+    createdAt: new Date(),
+    author: "ddddddddd",
+    tags: ["космос", "тенденции", "технологии"],
+    content: "ggggggggggggggggggggggggggggggggggggggggggggggggggggg"
+};
+var testArticle2 = {
+    summary: "ddddddddddd",
+    tags: ["mwc", "sony"]
+};
+var testArticle3 = {
+    id: "24",
+    title: "ggggggggggggg",
+    summary: "bbnbnbnbnbnbnbnbnbnbn",
+    createdAt: new Date(),
+    author: "BagRaiders",
+    tags: ["ShootingStars", "ROFL", "AZAZA"],
+    content: "ololololololololololo"
+};
+var testFilter1 = {
+    author: "DenisBelobrotski"
+};
+var testFilter2 = {
+    dateFrom: new Date(2017, 2, 2),
+    dateTo: new Date(2017, 2, 6)
+};
+var testFilter3 = {
+    tags: ["lenovo"]
+};
+var testFilter4 = {
+    author: "DenisBelobrotski",
+    dateFrom: new Date(2017, 0),
+    dateTo: new Date(2017, 3),
+    tags: ["медицина"]
+};
+var testFilter5 = {
+    author: "MrCrabs"
+};
+
+console.log("getArticle(valid): ");
+console.log(getArticle("12"));
+console.log("getArticle(invalid): ");
+console.log(getArticle("1433"));
+console.log("validateArticle(valid): " + validateArticle(getArticle("12")));
+console.log("validateArticle(invalid): " + validateArticle(testArticle3));
+console.log("articles length before addArticle(): " + articles.length);
+console.log("addArticle(invalid): " + addArticle(testArticle3));
+console.log("addArticle(valid): " + addArticle(testArticle1));
+console.log("getArticle(addedArticle): ");
+console.log(getArticle("21"));
+console.log("articles length after addArticle(): " + articles.length);
+console.log("editArticle(valid): " + editArticle("21", testArticle2));
+console.log("editArticle(invalid): " + editArticle("1438", testArticle2));
+console.log("editArticle(invalid): " + editArticle("21", testArticle3));
+console.log("getArticle(editedArticle): ");
+console.log(getArticle("21"));
+console.log("removeArticle(valid): " + removeArticle("21"));
+console.log("removeArticle(invalid): " + removeArticle("1483"));
+console.log("articles length after removeArticle(): " + articles.length);
+
+console.log("getArticles(0, 10)(valid): ");
+getArticles(0, 10).forEach(function (currentElement) {
+    console.log(currentElement);
+});
+console.log("getArticles(10, 11)(valid): ");
+getArticles(10, 11).forEach(function (currentElement) {
+    console.log(currentElement);
+});
+console.log("getArticles(0, 10, testFilter1)(valid): ");
+getArticles(0, 10, testFilter1).forEach(function (currentElement) {
+    console.log(currentElement);
+});
+console.log("getArticles(0, 10, testFilter2)(valid): ");
+getArticles(0, 10, testFilter2).forEach(function (currentElement) {
+    console.log(currentElement);
+});
+console.log("getArticles(0, 10, testFilter3)(valid): ");
+getArticles(0, 10, testFilter3).forEach(function (currentElement) {
+    console.log(currentElement);
+});
+console.log("getArticles(0, 10, testFilter4)(valid): ");
+getArticles(0, 10, testFilter4).forEach(function (currentElement) {
+    console.log(currentElement);
+});
+console.log("getArticles(0, 10, testFilter5)(invalid): ");
+getArticles(0, 10, testFilter5).forEach(function (currentElement) {
+    console.log(currentElement);
+});
