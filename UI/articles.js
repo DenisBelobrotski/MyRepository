@@ -492,6 +492,9 @@ function getArticles(skip, top, filterConfig) {
             })
         }
     }
+    resultArticles.sort(function (firstArticle, secondArticle) {
+        return firstArticle.createdAt.getTime() - secondArticle.createdAt.getTime();
+    });
     return resultArticles.slice(from, from + amount);
 }
 
@@ -502,15 +505,28 @@ function getArticle(findId) {
 }
 
 function validateArticle(article) {
-    if (article.title != undefined && (article.title.length == 0 || article.title.length > 100)) {
+    if (article.id != undefined && (typeof(article.id) != "string" || article.id.length == 0)) {
         return false;
-    } else if (article.summary != undefined && (article.summary.length == 0 || article.summary.length > 200)) {
+    } else if (article.title != undefined && (typeof(article.title) != "string" || article.title.length == 0 ||
+        article.title.length > 100)) {
         return false;
-    } else if (articles.tags != undefined && (article.tags.length == 0 || article.tags.length > 5)) {
+    } else if (article.summary != undefined && (typeof(article.summary) != "string" || article.summary.length == 0 ||
+        article.summary.length > 200)) {
         return false;
-    } else if (article.tags != undefined && !article.tags.every(function (tag) {
+    } else if (article.createdAt != undefined && !(article.createdAt instanceof Date)) {
+        return false;
+    } else if (article.author != undefined && (typeof(article.author) != "string" || article.author.length == 0)) {
+        return false;
+    } else if (article.content != undefined && (typeof(article.content) != "string" || article.content.length == 0)) {
+        return false;
+    } else if (article.tags != undefined && (!(article.tags instanceof Array) || article.tags.length == 0 ||
+        article.tags.length > 5)) {
+        return false;
+    } else if (article.tags != undefined && (!article.tags.every(function (tag) {
             return tags.indexOf(tag) >= 0;
-        })) {
+        }) || !article.tags.every(function (tag) {
+            return typeof (tag) == "string";
+        }))) {
         return false;
     } else {
         return true;
@@ -519,9 +535,9 @@ function validateArticle(article) {
 
 function addArticle(article) {
     var prevSize = articles.length;
-    if(!validateArticle(article)) {
+    if (!validateArticle(article)) {
         return false;
-    } else if(prevSize == articles.push(article)) {
+    } else if (prevSize == articles.push(article)) {
         return false;
     } else {
         return true;
@@ -530,7 +546,7 @@ function addArticle(article) {
 
 function editArticle(editId, newArticle) {
     var editIndex = articles.indexOf(getArticle(editId));
-    if(!validateArticle(newArticle) || editIndex < 0) {
+    if (!validateArticle(newArticle) || editIndex < 0) {
         return false;
     }
     if (newArticle.title != undefined) {
@@ -568,7 +584,7 @@ var testArticle1 = {
     content: "ggggggggggggggggggggggggggggggggggggggggggggggggggggg"
 };
 var testArticle2 = {
-    summary: "ddddddddddd",
+    summary: "bbbbbbbbb",
     tags: ["mwc", "sony"]
 };
 var testArticle3 = {
