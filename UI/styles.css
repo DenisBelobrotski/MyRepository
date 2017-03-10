@@ -172,7 +172,7 @@ hgroup h2 {
     padding: 15px;
 }
 
-.date {
+.article-date {
     width: 300px;
     height: 30px;
     font-size: 16px;
@@ -189,7 +189,7 @@ hgroup h2 {
     height: 0;
 }
 
-.newLine {
+.new-line {
     display: block
 }
 
@@ -271,11 +271,11 @@ section h3 {
     line-height: 25px;
 }
 
-.dateFilter span input {
+.date-filter span input {
     float: right;
 }
 
-.authorNameFilter span input {
+.author-name-filter span input {
     width: 100%;
 }
 
@@ -300,11 +300,11 @@ section h3 {
     border: none;
 }
 
-.tagsList {
+.tags-list {
     margin-left: 15px;
 }
 
-.smallButton {
+.small-button {
     font-size: 14px;
     display: block;
     width: 80px;
@@ -317,7 +317,7 @@ section h3 {
     margin: 10px 0;
 }
 
-.smallButton:hover {
+.small-button:hover {
     border: none;
     box-shadow: inset 100px 100px 120px #689E4F;
     color: #fff;
