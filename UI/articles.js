@@ -1,5 +1,7 @@
-var articleModel = (function () {
-    var articles = [
+let user = null;
+
+let articlesModule = (function () {
+    let articles = [
         {
             id: "1",
             title: "Ученые предложили накрыть Марс магнитным щитом и вернуть планете океаны",
@@ -460,15 +462,15 @@ var articleModel = (function () {
         }
     ];
 
-    var tags = [
+    let tags = [
         "космос", "тенденции", "технологии", "курьезы", "nokia", "apple", "слухи", "смартфоны", "bitcoin", "социальные сети",
         "медицина", "mwc", "sony", "lenovo", "motorola", "умные часы"
     ];
 
     function getArticles(skip, top, filterConfig) {
-        var resultArticles = articles;
-        var from = skip || 0;
-        var amount = top || 10;
+        let resultArticles = articles;
+        const from = skip || 0;
+        const amount = top || 10;
         if (filterConfig != undefined) {
             if (filterConfig.dateFrom != undefined) {
                 resultArticles = resultArticles.filter(function (currentElement) {
@@ -523,30 +525,26 @@ var articleModel = (function () {
         } else if (article.tags != undefined && (!(article.tags instanceof Array) || article.tags.length == 0 ||
             article.tags.length > 5)) {
             return false;
-        } else if (article.tags != undefined && (!article.tags.every(function (tag) {
+        } else {
+            return !(article.tags != undefined && (!article.tags.every(function (tag) {
                 return tags.indexOf(tag) >= 0;
             }) || !article.tags.every(function (tag) {
                 return typeof (tag) == "string";
-            }))) {
-            return false;
-        } else {
-            return true;
+            })));
         }
     }
 
     function addArticle(article) {
-        var prevSize = articles.length;
+        const prevSize = articles.length;
         if (!validateArticle(article)) {
             return false;
-        } else if (prevSize == articles.push(article)) {
-            return false;
         } else {
-            return true;
+            return prevSize != articles.push(article);
         }
     }
 
     function editArticle(editId, newArticle) {
-        var editIndex = articles.indexOf(getArticle(editId));
+        const editIndex = articles.indexOf(getArticle(editId));
         if (!validateArticle(newArticle) || editIndex < 0) {
             return false;
         }
@@ -566,7 +564,7 @@ var articleModel = (function () {
     }
 
     function removeArticle(removeId) {
-        var removeIndex = articles.indexOf(getArticle(removeId));
+        const removeIndex = articles.indexOf(getArticle(removeId));
         if (removeIndex != -1) {
             articles.splice(removeIndex, 1);
             return true;
@@ -585,53 +583,11 @@ var articleModel = (function () {
     };
 }());
 
-var testArticle1 = {
-    id: "21",
-    title: "aaaaaaaaaaaaaaaaaaaaaa",
-    summary: "aaaaa",
-    createdAt: new Date(),
-    author: "ddddddddd",
-    tags: ["космос", "тенденции", "технологии"],
-    content: "ggggggggggggggggggggggggggggggggggggggggggggggggggggg"
-};
-var testArticle2 = {
-    summary: "bbbbbbbbb",
-    tags: ["mwc", "sony"]
-};
-var testArticle3 = {
-    id: "24",
-    title: "ggggggggggggg",
-    summary: "bbnbnbnbnbnbnbnbnbnbn",
-    createdAt: new Date(),
-    author: "BagRaiders",
-    tags: ["ShootingStars", "ROFL", "AZAZA"],
-    content: "ololololololololololo"
-};
-var testFilter1 = {
-    author: "DenisBelobrotski"
-};
-var testFilter2 = {
-    dateFrom: new Date(2017, 2, 2),
-    dateTo: new Date(2017, 2, 6)
-};
-var testFilter3 = {
-    tags: ["lenovo"]
-};
-var testFilter4 = {
-    author: "DenisBelobrotski",
-    dateFrom: new Date(2017, 0),
-    dateTo: new Date(2017, 3),
-    tags: ["медицина"]
-};
-var testFilter5 = {
-    author: "MrCrabs"
-};
-
-var articleRenderer = (function () {
-    var ARTICLE_TEMPLATE;
-    var ARTICLE_LIST_NODE;
-    var TAGS_TEMPLATE;
-    var TAGS_LIST_NODE;
+let articlesRenderer = (function () {
+    let ARTICLE_TEMPLATE;
+    let ARTICLE_LIST_NODE;
+    let TAGS_TEMPLATE;
+    let TAGS_LIST_NODE;
 
     function init() {
         ARTICLE_TEMPLATE = document.querySelector("#template-article");
@@ -639,7 +595,7 @@ var articleRenderer = (function () {
     }
 
     function insertArticlesInDOM(articles) {
-        var articlesNodes = renderArticles(articles);
+        let articlesNodes = renderArticles(articles);
         articlesNodes.forEach(function (node) {
             ARTICLE_LIST_NODE.appendChild(node);
         });
@@ -656,7 +612,7 @@ var articleRenderer = (function () {
     }
 
     function renderArticle(article) {
-        var template = ARTICLE_TEMPLATE;
+        const template = ARTICLE_TEMPLATE;
         template.content.querySelector(".article-item").dataset.id = article.id;
         template.content.querySelector(".article-title").textContent = article.title;
         template.content.querySelector(".article-summary").textContent = article.summary;
@@ -665,7 +621,7 @@ var articleRenderer = (function () {
 
         TAGS_TEMPLATE = document.querySelector("#template-tags-list");
         TAGS_LIST_NODE = template.content.querySelector(".article-tags");
-        var tagsNodes = renderTags(article.tags);
+        let tagsNodes = renderTags(article.tags);
         tagsNodes.forEach(function (node) {
             TAGS_LIST_NODE.appendChild(node);
         });
@@ -677,11 +633,11 @@ var articleRenderer = (function () {
         TAGS_LIST_NODE.innerHTML = "";
         return tags.map(function (tag) {
             return renderTag(tag);
-        })
+        });
     }
 
     function renderTag(tag) {
-        var template = TAGS_TEMPLATE;
+        const template = TAGS_TEMPLATE;
         template.content.querySelector(".tags").textContent = tag;
 
         return template.content.querySelector(".tags").cloneNode(true);
@@ -702,14 +658,101 @@ var articleRenderer = (function () {
 document.addEventListener("DOMContentLoaded", startApp());
 
 function startApp() {
-    articleRenderer.init();
-    renderArticles(0, 10);
+    articlesRenderer.init();
+    renderArticles(0, 25);
 }
 
 function renderArticles(skip, top, filter) {
-    articleRenderer.removeArticlesFromDom();
+    articlesRenderer.removeArticlesFromDom();
 
-    var articles = articleModel.getArticles(skip, top, filter);
+    let articles = articlesModule.getArticles(skip, top, filter);
 
-    articleRenderer.insertArticlesInDOM(articles);
+    articlesRenderer.insertArticlesInDOM(articles);
 }
+
+function addArticle(article) {
+    articlesModule.addArticle(article);
+    renderArticles(0, 25);
+}
+
+function removeArticle(removeID) {
+    articlesModule.removeArticle(removeID);
+    renderArticles(0, 25);
+}
+
+function editArticle(editID, newArticle) {
+    articlesModule.editArticle(editID, newArticle);
+    renderArticles(0, 25);
+}
+
+function changeCurrentUser(userName) {
+    if (userName != undefined) {
+        user = userName;
+    } else {
+        user = null;
+    }
+}
+
+function renderHeader() {
+    const NAVIGATION_BUTTONS = document.querySelector(".navigation-buttons");
+    const ADD_ARTICLE_TEMPLATE = document.querySelector("#template-add-article-button");
+    const USER_NAME = document.querySelector(".user-name");
+
+    if (user == null) {
+        USER_NAME.textContent = "Гость";
+        NAVIGATION_BUTTONS.querySelector(".login-logout").textContent = "Войти";
+    } else {
+        USER_NAME.textContent = user;
+        NAVIGATION_BUTTONS.querySelector(".login-logout").textContent = "Выйти";
+        NAVIGATION_BUTTONS.appendChild(ADD_ARTICLE_TEMPLATE.content.querySelector(".add-article-button").cloneNode(true));
+    }
+}
+
+let testArticle1 = {
+    id: "21",
+    title: "aaaaaaaaaaaaaaaaaaaaaa",
+    summary: "aaaaa",
+    createdAt: new Date(),
+    author: "ddddddddd",
+    tags: ["космос", "тенденции", "технологии"],
+    content: "ggggggggggggggggggggggggggggggggggggggggggggggggggggg"
+};
+let testArticle2 = {
+    summary: "bbbbbbbbb",
+    tags: ["mwc", "sony"]
+};
+let testArticle3 = {
+    id: "24",
+    title: "ggggggggggggg",
+    summary: "bbnbnbnbnbnbnbnbnbnbn",
+    createdAt: new Date(),
+    author: "BagRaiders",
+    tags: ["ShootingStars", "ROFL", "AZAZA"],
+    content: "ololololololololololo"
+};
+let testFilter1 = {
+    author: "DenisBelobrotski"
+};
+let testFilter2 = {
+    dateFrom: new Date(2017, 2, 2),
+    dateTo: new Date(2017, 2, 6)
+};
+let testFilter3 = {
+    tags: ["lenovo"]
+};
+let testFilter4 = {
+    author: "DenisBelobrotski",
+    dateFrom: new Date(2017, 0),
+    dateTo: new Date(2017, 3),
+    tags: ["медицина"]
+};
+let testFilter5 = {
+    author: "MrCrabs"
+};
+
+addArticle(testArticle1);
+editArticle(21, testArticle2);
+removeArticle(21);
+changeCurrentUser("DenisBelobrotski");
+changeCurrentUser(null);
+renderHeader();
