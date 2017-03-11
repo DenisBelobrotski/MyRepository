@@ -646,7 +646,7 @@ var articleRenderer = (function () {
     }
 
     function removeArticlesFromDom() {
-        ARTICLE_LIST_NODE.innerHTML = '';
+        ARTICLE_LIST_NODE.innerHTML = "";
     }
 
     function renderArticles(articles) {
@@ -662,17 +662,19 @@ var articleRenderer = (function () {
         template.content.querySelector(".article-summary").textContent = article.summary;
         template.content.querySelector(".article-author").textContent = article.author;
         template.content.querySelector(".article-date").textContent = formatDate(article.createdAt);
+
         TAGS_TEMPLATE = document.querySelector("#template-tags-list");
         TAGS_LIST_NODE = template.content.querySelector(".article-tags");
         var tagsNodes = renderTags(article.tags);
         tagsNodes.forEach(function (node) {
             TAGS_LIST_NODE.appendChild(node);
         });
-        tagsNodes.splice(0, tagsNodes.length);
+
         return template.content.querySelector(".article-item").cloneNode(true);
     }
 
     function renderTags(tags) {
+        TAGS_LIST_NODE.innerHTML = "";
         return tags.map(function (tag) {
             return renderTag(tag);
         })
