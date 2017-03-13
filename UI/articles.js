@@ -508,25 +508,25 @@ let articlesModule = (function () {
     }
 
     function validateArticle(article) {
-        if (article.id != undefined && (typeof(article.id) != "string" || article.id.length == 0)) {
+        if (article.id == undefined || (typeof(article.id) != "string" || article.id.length == 0)) {
             return false;
-        } else if (article.title != undefined && (typeof(article.title) != "string" || article.title.length == 0 ||
+        } else if (article.title == undefined || (typeof(article.title) != "string" || article.title.length == 0 ||
             article.title.length > 100)) {
             return false;
-        } else if (article.summary != undefined && (typeof(article.summary) != "string" || article.summary.length == 0 ||
+        } else if (article.summary == undefined || (typeof(article.summary) != "string" || article.summary.length == 0 ||
             article.summary.length > 200)) {
             return false;
-        } else if (article.createdAt != undefined && !(article.createdAt instanceof Date)) {
+        } else if (article.createdAt == undefined || !(article.createdAt instanceof Date)) {
             return false;
-        } else if (article.author != undefined && (typeof(article.author) != "string" || article.author.length == 0)) {
+        } else if (article.author == undefined || (typeof(article.author) != "string" || article.author.length == 0)) {
             return false;
-        } else if (article.content != undefined && (typeof(article.content) != "string" || article.content.length == 0)) {
+        } else if (article.content == undefined || (typeof(article.content) != "string" || article.content.length == 0)) {
             return false;
-        } else if (article.tags != undefined && (!(article.tags instanceof Array) || article.tags.length == 0 ||
+        } else if (article.tags == undefined || (!(article.tags instanceof Array) || article.tags.length == 0 ||
             article.tags.length > 5)) {
             return false;
         } else {
-            return !(article.tags != undefined && (!article.tags.every(function (tag) {
+            return !(article.tags == undefined || (!article.tags.every(function (tag) {
                 return tags.indexOf(tag) >= 0;
             }) || !article.tags.every(function (tag) {
                 return typeof (tag) == "string";
@@ -655,6 +655,48 @@ let articlesRenderer = (function () {
     };
 }());
 
+let testArticle1 = {
+    id: "21",
+    title: "aaaaaaaaaaaaaaaaaaaaaa",
+    summary: "aaaaa",
+    createdAt: new Date(),
+    author: "ddddddddd",
+    tags: ["космос", "тенденции", "технологии"],
+    content: "ggggggggggggggggggggggggggggggggggggggggggggggggggggg"
+};
+let testArticle2 = {
+    summary: "bbbbbbbbb",
+    tags: ["mwc", "sony"]
+};
+let testArticle3 = {
+    id: "24",
+    title: "ggggggggggggg",
+    summary: "bbnbnbnbnbnbnbnbnbnbn",
+    createdAt: new Date(),
+    author: "BagRaiders",
+    tags: ["ShootingStars", "ROFL", "AZAZA"],
+    content: "ololololololololololo"
+};
+let testFilter1 = {
+    author: "DenisBelobrotski"
+};
+let testFilter2 = {
+    dateFrom: new Date(2017, 2, 2),
+    dateTo: new Date(2017, 2, 6)
+};
+let testFilter3 = {
+    tags: ["lenovo"]
+};
+let testFilter4 = {
+    author: "DenisBelobrotski",
+    dateFrom: new Date(2017, 0),
+    dateTo: new Date(2017, 3),
+    tags: ["медицина"]
+};
+let testFilter5 = {
+    author: "MrCrabs"
+};
+
 document.addEventListener("DOMContentLoaded", startApp());
 
 function startApp() {
@@ -708,51 +750,13 @@ function renderHeader() {
     }
 }
 
-let testArticle1 = {
-    id: "21",
-    title: "aaaaaaaaaaaaaaaaaaaaaa",
-    summary: "aaaaa",
-    createdAt: new Date(),
-    author: "ddddddddd",
-    tags: ["космос", "тенденции", "технологии"],
-    content: "ggggggggggggggggggggggggggggggggggggggggggggggggggggg"
-};
-let testArticle2 = {
-    summary: "bbbbbbbbb",
-    tags: ["mwc", "sony"]
-};
-let testArticle3 = {
-    id: "24",
-    title: "ggggggggggggg",
-    summary: "bbnbnbnbnbnbnbnbnbnbn",
-    createdAt: new Date(),
-    author: "BagRaiders",
-    tags: ["ShootingStars", "ROFL", "AZAZA"],
-    content: "ololololololololololo"
-};
-let testFilter1 = {
-    author: "DenisBelobrotski"
-};
-let testFilter2 = {
-    dateFrom: new Date(2017, 2, 2),
-    dateTo: new Date(2017, 2, 6)
-};
-let testFilter3 = {
-    tags: ["lenovo"]
-};
-let testFilter4 = {
-    author: "DenisBelobrotski",
-    dateFrom: new Date(2017, 0),
-    dateTo: new Date(2017, 3),
-    tags: ["медицина"]
-};
-let testFilter5 = {
-    author: "MrCrabs"
-};
-
 addArticle(testArticle1);
 editArticle(21, testArticle2);
 removeArticle(21);
 changeCurrentUser("DenisBelobrotski");
 changeCurrentUser(null);
 renderHeader();
+var invalidTestArticle = {bbbbb: "fdsfds"};
+console.log(articlesModule.validateArticle(invalidTestArticle));
+console.log(articlesModule.validateArticle(testArticle1));
+console.log(articlesModule.validateArticle(testArticle3));
