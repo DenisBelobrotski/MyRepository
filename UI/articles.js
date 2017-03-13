@@ -760,3 +760,17 @@ var invalidTestArticle = {bbbbb: "fdsfds"};
 console.log(articlesModule.validateArticle(invalidTestArticle));
 console.log(articlesModule.validateArticle(testArticle1));
 console.log(articlesModule.validateArticle(testArticle3));
+console.log(articlesModule.validateArticle({
+    id: "21",
+    title: "aaaaaaaaaaaaaaaaaaaaaa",
+    summary: "aaaaa",
+    createdAt: new Date(),
+    author: "ddddddddd",
+    tags: ["космос", "тенденции", "технологии"],
+    content: "ggggggggggggggggggggggggggggggggggggggggggggggggggggg"
+}));
+console.log(articlesModule.validateArticle({
+    summary: "bbbbbbbbb",
+    tags: ["mwc", "sony"]
+}));
+console.log(articlesModule.validateArticle({}));
