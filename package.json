@@ -1,0 +1,22 @@
+{
+  "name": "myrepository",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DenisBelobrotski/MyRepository.git"
+  },
+  "author": "denisbelobrotski",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DenisBelobrotski/MyRepository/issues"
+  },
+  "homepage": "https://github.com/DenisBelobrotski/MyRepository#readme",
+  "dependencies": {
+    "express": "^4.15.2"
+  }
+}

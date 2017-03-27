@@ -18,19 +18,28 @@
     </hgroup>
     <nav class="global">
         <ul class="navigation-buttons">
-            <li class="navigation-button"><a href=#>Главная</a></li>
-            <li class="navigation-button"><a class="login-logout" href=#>Войти</a></li>
+
         </ul>
     </nav>
 </header>
-<div class="main-block">
-
-</div>
+<div class="main-block"></div>
 
 <footer class=clearfix>
     <p class=copyright>&copy; 2017 <strong>Новостной портал</strong>. Все права защищены. <strong>Денис
         Белоброцкий.</strong> БГУ ФПМИ 2 курс 6 группа. E-mail: belobrotskiy@gmail.com</p>
 </footer>
+
+<template id="template-main-page-button">
+    <li class="navigation-button"><a class="main-page-button" href=#>Главная</a></li>
+</template>
+
+<template id="template-add-article-button">
+    <li class="navigation-button"><a class="add-article-button" href="#">Добавить новость</a></li>
+</template>
+
+<template id="template-login-logout-button">
+    <li class="navigation-button"><a class="login-logout" href=#>Войти</a></li>
+</template>
 
 <template id="template-article">
     <article class="article-item" data-id="id">
@@ -42,15 +51,9 @@
                 <span class="new-line">Теги: <span class="article-tags">Список тегов</span></span>
             </footer>
         </header>
-        <div class="article-summary-container">
-
-        </div>
-        <div class="article-content-container">
-
-        </div>
-        <div class="article-buttons">
-
-        </div>
+        <div class="article-summary-container"></div>
+        <div class="article-content-container"></div>
+        <div class="article-buttons"></div>
     </article>
 </template>
 
@@ -68,10 +71,6 @@
 
 <template id="template-article-tags">
     <a class="tags" href=#>Текст тега</a>
-</template>
-
-<template id="template-add-article-button">
-    <li class="navigation-button"><a class="add-article-button" href="#">Добавить новость</a></li>
 </template>
 
 <template id="template-filters">
@@ -117,11 +116,71 @@
 <template id="template-paginator">
     <div class="paginator"></div>
 </template>
+
 <template id="template-pagination-next-button">
     <a class="pagination-next-button" href="#">Далее &raquo;&raquo;</a>
 </template>
+
 <template id="template-pagination-prev-button">
     <a class="pagination-prev-button" href="#">&laquo;&laquo; Назад</a>
+</template>
+
+<template id="template-edit-form">
+    <div class="edit-form">
+        <div class="fixed-fields">
+            <div class="id-edit-block">
+                <span>ID: </span>
+                <span class="id-edit">ID</span>
+            </div>
+            <div class="date-edit-block">
+                <span>Дата публикации: </span>
+                <span class="date-edit">Дата публикации</span>
+            </div>
+            <div class="author-edit-block">
+                <span>Автор: </span>
+                <span class="author-edit">Имя автора</span>
+            </div>
+        </div>
+        <div class="title-edit-block">
+            <h4>Заглавие новости:</h4>
+            <textarea maxlength="100" rows="1" id="title-input"></textarea>
+        </div>
+        <div class="add-tags">
+            <h3>Теги</h3>
+            <span><input class="tag-input" placeholder="Введите тег" list="edit-form-tags-options">
+                <datalist id="edit-form-tags-options"></datalist>
+            </span>
+            <a class="add-tag-small-button" href=#>Добавить</a>
+        </div>
+        <div>
+            <h3>Выбранные теги</h3>
+            <ul class="tags-list"></ul>
+        </div>
+        <div class="summary-edit-block">
+            <h4>Краткое описание:</h4>
+            <textarea maxlength="200" rows="2" id="summary-input"></textarea>
+        </div>
+        <div class="content-edit-block">
+            <h4>Содержание:</h4>
+            <textarea rows="20" id="content-input"></textarea>
+        </div>
+        <div class="add-article-button-block">
+            <a class="confirm-article-button" href="#">Добавить новость</a>
+        </div>
+    </div>
+</template>
+
+<template id="template-authorization-page">
+    <form class="authorization-input-section" name="authorization-input">
+        <input type="text" name="login-input" placeholder="Логин">
+        <input type="password" name="password-input" placeholder="Пароль">
+    </form>
+</template>
+
+<template id="template-login-button">
+    <div class="login-button-section">
+        <a class="login-button" href="#">Войти</a>
+    </div>
 </template>
 
 </body>
