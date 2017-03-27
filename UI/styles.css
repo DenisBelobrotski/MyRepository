@@ -165,28 +165,32 @@ hgroup h2 {
 
 /*Main*/
 
-.content {
+.content, .full-article {
     width: 630px;
     margin-right: 30px;
     color: #444444;
     float: left;
 }
 
-.content header {
+.content header, .full-article header {
     padding: 15px;
 }
 
-.content header h2 {
+.content header h2, .full-article header h2 {
     font: 24px/24px Arial, Helvetica, sans-serif;
 
 }
 
-.content article {
+.content article, .full-article article {
     padding-bottom: 20px;
 }
 
-.content p {
+.content p, .full-article p {
     padding: 15px;
+}
+
+.full-article {
+    width: 960px;
 }
 
 .article-date {
@@ -206,6 +210,15 @@ hgroup h2 {
     height: 0;
 }
 
+.main-block:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+}
+
 .new-line {
     display: block
 }
@@ -214,7 +227,7 @@ footer p {
     margin: 0
 }
 
-.tags {
+.tags, .filter-tags {
     padding: 0 3px;
     margin-right: 3px;
     font-variant: small-caps;
@@ -222,7 +235,7 @@ footer p {
     border-radius: 3px;
 }
 
-.tags:hover {
+.tags:hover, .filter-tags:hover {
     box-shadow: inset 100px 100px 120px #689e4f;
     color: #ffffff;
     border: none;
@@ -241,6 +254,25 @@ footer p {
 }
 
 .button:hover {
+    border: none;
+    box-shadow: inset 100px 100px 120px #689E4F;
+    color: #fff;
+}
+
+.edit-button, .delete-button {
+    font-size: 14px;
+    display: block;
+    width: 120px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    line-height: 30px;
+    padding: 0 25px;
+    background: #92d36e;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.edit-button:hover, .delete-button:hover {
     border: none;
     box-shadow: inset 100px 100px 120px #689E4F;
     color: #fff;
@@ -296,7 +328,7 @@ section h3 {
     width: 100%;
 }
 
-.tagsFilter span input {
+.tags-filter span input {
     width: 100%;
 }
 
@@ -321,7 +353,7 @@ section h3 {
     margin-left: 15px;
 }
 
-.small-button {
+.add-tag-small-button {
     font-size: 14px;
     display: block;
     width: 80px;
@@ -334,7 +366,25 @@ section h3 {
     margin: 10px 0;
 }
 
-.small-button:hover {
+.add-tag-small-button:hover {
+    border: none;
+    box-shadow: inset 100px 100px 120px #689E4F;
+    color: #fff;
+}
+.confirm-small-button, .reset-small-button {
+    font-size: 14px;
+    display: block;
+    width: 80px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    line-height: 25px;
+    padding: 0 25px;
+    background: #92d36e;
+    text-align: center;
+    margin: 10px 30px;
+}
+
+.confirm-small-button:hover, .reset-small-button:hover {
     border: none;
     box-shadow: inset 100px 100px 120px #689E4F;
     color: #fff;

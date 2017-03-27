@@ -23,54 +23,15 @@
         </ul>
     </nav>
 </header>
-<div class="clearfix">
-    <div class="content">
+<div class="main-block">
 
-    </div>
-    <aside>
-        <h2>Фильтры</h2>
-        <section class="date-filter">
-            <h3>Дата публикации</h3>
-            <span>c<input type="date"></span>
-            <span>по<input type="date"></span>
-        </section>
-        <section class="author-name-filter">
-            <h3>Имя автора</h3>
-            <span><input placeholder="Введите имя автора"></span>
-            <a class="small-button" href=#>Добавить</a>
-        </section>
-        <section class="tags-filter">
-            <h3>Теги</h3>
-            <span><input placeholder="Введите тег"></span>
-            <a class="small-button" href=#>Добавить</a>
-        </section>
-        <section>
-            <h3>Выбранные авторы</h3>
-            <ul class="authors">
-                <li><a href=#>DenisBelobrotski</a></li>
-            </ul>
-        </section>
-        <section>
-            <h3>Выбранные теги</h3>
-            <ul class="tags-list">
-                <li><a class="tags" href=#>анонс</a></li>
-            </ul>
-        </section>
-    </aside>
 </div>
-<div class="paginator">
-    <a href="#">Назад</a>
-    <a href="#">1</a>
-    <a href="#">2</a>
-    <span>&hellip;</span>
-    <a href="#">9</a>
-    <a href="#">10</a>
-    <a href="#">Вперёд</a>
-</div>
+
 <footer class=clearfix>
     <p class=copyright>&copy; 2017 <strong>Новостной портал</strong>. Все права защищены. <strong>Денис
         Белоброцкий.</strong> БГУ ФПМИ 2 курс 6 группа. E-mail: belobrotskiy@gmail.com</p>
 </footer>
+
 <template id="template-article">
     <article class="article-item" data-id="id">
         <header>
@@ -81,15 +42,87 @@
                 <span class="new-line">Теги: <span class="article-tags">Список тегов</span></span>
             </footer>
         </header>
-        <p class="article-summary">Краткое описание статьи.</p>
-        <div><a class="button" href=#>Подробнее</a></div>
+        <div class="article-summary-container">
+
+        </div>
+        <div class="article-content-container">
+
+        </div>
+        <div class="article-buttons">
+
+        </div>
     </article>
 </template>
-<template id="template-tags-list">
+
+<template id="template-full-view-button">
+    <a class="button" href=#>Подробнее</a>
+</template>
+
+<template id="template-edit-button">
+    <a class="edit-button" href=#>Редактировать</a>
+</template>
+
+<template id="template-delete-button">
+    <a class="delete-button" href=#>Удалить</a>
+</template>
+
+<template id="template-article-tags">
     <a class="tags" href=#>Текст тега</a>
 </template>
-<template id = "template-add-article-button">
-    <li class="navigation-button"><a class = "add-article-button" href = "#">Добавить новость</a></li>
+
+<template id="template-add-article-button">
+    <li class="navigation-button"><a class="add-article-button" href="#">Добавить новость</a></li>
 </template>
+
+<template id="template-filters">
+    <aside class="filters-block">
+        <form name="filters">
+            <h2>Фильтры</h2>
+            <section class="date-filter">
+                <h3>Дата публикации</h3>
+                <span>c<input class="date-from" type="date" name="dateFromInput"></span>
+                <span>по<input class="date-to" type="date" name="dateToInput"></span>
+            </section>
+            <section class="author-name-filter">
+                <h3>Имя автора</h3>
+                <span><input class="author-input" placeholder="Введите имя автора" name="authorInput" list="authors">
+                <datalist id="authors"></datalist>
+            </span>
+            </section>
+            <section class="tags-filter">
+                <h3>Теги</h3>
+                <span><input class="tags-input" placeholder="Введите тег" name="tagsInput" list="tags">
+                <datalist id="tags"></datalist>
+            </span>
+                <a class="add-tag-small-button" href=#>Добавить</a>
+            </section>
+            <section>
+                <h3>Выбранные теги</h3>
+                <ul class="tags-list"></ul>
+            </section>
+            <a class="confirm-small-button" href=#>Применить</a>
+            <a class="reset-small-button" href=#>Сбросить</a>
+        </form>
+    </aside>
+</template>
+
+<template id="template-filter-tag">
+    <li class="tags-list-element"><a class="filter-tags" href=#>анонс</a></li>
+</template>
+
+<template id="template-option">
+    <option class="option" value=""></option>
+</template>
+
+<template id="template-paginator">
+    <div class="paginator"></div>
+</template>
+<template id="template-pagination-next-button">
+    <a class="pagination-next-button" href="#">Далее &raquo;&raquo;</a>
+</template>
+<template id="template-pagination-prev-button">
+    <a class="pagination-prev-button" href="#">&laquo;&laquo; Назад</a>
+</template>
+
 </body>
 </html>
