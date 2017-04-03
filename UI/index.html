@@ -58,7 +58,7 @@
 </template>
 
 <template id="template-full-view-button">
-    <a class="button" href=#>Подробнее</a>
+    <a class="more-info-button" href=#>Подробнее</a>
 </template>
 
 <template id="template-edit-button">
@@ -141,32 +141,34 @@
                 <span class="author-edit">Имя автора</span>
             </div>
         </div>
-        <div class="title-edit-block">
-            <h4>Заглавие новости:</h4>
-            <textarea maxlength="100" rows="1" id="title-input"></textarea>
-        </div>
-        <div class="add-tags">
-            <h3>Теги</h3>
-            <span><input class="tag-input" placeholder="Введите тег" list="edit-form-tags-options">
+        <form name="edit">
+            <div class="title-edit-block">
+                <h4>Заглавие новости:</h4>
+                <textarea maxlength="100" rows="1" id="title-input"></textarea>
+            </div>
+            <div class="add-tags">
+                <h3>Теги</h3>
+                <span><input class="tag-input" name="tagsInput" placeholder="Введите тег" list="edit-form-tags-options">
                 <datalist id="edit-form-tags-options"></datalist>
             </span>
-            <a class="add-tag-small-button" href=#>Добавить</a>
-        </div>
-        <div>
-            <h3>Выбранные теги</h3>
-            <ul class="tags-list"></ul>
-        </div>
-        <div class="summary-edit-block">
-            <h4>Краткое описание:</h4>
-            <textarea maxlength="200" rows="2" id="summary-input"></textarea>
-        </div>
-        <div class="content-edit-block">
-            <h4>Содержание:</h4>
-            <textarea rows="20" id="content-input"></textarea>
-        </div>
-        <div class="add-article-button-block">
-            <a class="confirm-article-button" href="#">Добавить новость</a>
-        </div>
+                <a class="add-tag-small-button" href=#>Добавить</a>
+            </div>
+            <div>
+                <h3>Выбранные теги</h3>
+                <ul class="edit-form-tags-list"></ul>
+            </div>
+            <div class="summary-edit-block">
+                <h4>Краткое описание:</h4>
+                <textarea maxlength="200" rows="2" id="summary-input"></textarea>
+            </div>
+            <div class="content-edit-block">
+                <h4>Содержание:</h4>
+                <textarea rows="20" id="content-input"></textarea>
+            </div>
+            <div class="add-article-button-block">
+                <a class="confirm-article-button" href="#">Добавить новость</a>
+            </div>
+        </form>
     </div>
 </template>
 

@@ -476,6 +476,10 @@ let usersMain = [
     {
         login: "DenisBelobrotskiy",
         password: "2222"
+    },
+    {
+        login: "admin",
+        password: "admin"
     }
 ];
 
@@ -494,7 +498,9 @@ let articlesModule = (function () {
     let tags = JSON.parse(localStorage.getItem("tags"));
 
     function getArticles(skip, top, filterConfig) {
-        let resultArticles = articles;
+        let resultArticles = articles.filter(function (currentElement) {
+            return !currentElement.isHidden;
+        });
         const from = skip || 0;
         const amount = top || 10;
         if (filterConfig != undefined) {
@@ -529,6 +535,7 @@ let articlesModule = (function () {
     }
 
     function getArticle(findId) {
+        resetArticles();
         return articles.filter(function (currentElement) {
             return currentElement.id == findId;
         })[0];
@@ -593,19 +600,14 @@ let articlesModule = (function () {
     function addArticle(article) {
         resetArticles();
         const prevSize = articles.length;
-        if (!validateAddArticle(article)) {
-            return false;
-        } else {
-            return prevSize != articles.push(article);
-        }
+        let success = articles.push(article);
+        localStorage.setItem("articles", JSON.stringify(articles));
+        return prevSize != success;
     }
 
     function editArticle(editId, newArticle) {
         resetArticles();
         const editIndex = articles.indexOf(getArticle(editId));
-        if (!validateEditArticle(newArticle) || editIndex < 0) {
-            return false;
-        }
         if (newArticle.title != undefined) {
             articles[editIndex].title = newArticle.title;
         }
@@ -618,6 +620,7 @@ let articlesModule = (function () {
         if (newArticle.content != undefined) {
             articles[editIndex].content = newArticle.content;
         }
+        localStorage.setItem("articles", JSON.stringify(articles));
         return true;
     }
 
@@ -626,6 +629,7 @@ let articlesModule = (function () {
         const removeIndex = articles.indexOf(getArticle(removeId));
         if (removeIndex != -1) {
             articles.splice(removeIndex, 1);
+            localStorage.setItem("articles", JSON.stringify(articles));
             return true;
         } else {
             return false;
@@ -710,18 +714,29 @@ let newsPageRenderer = (function () {
             CONTENT.appendChild(node);
         });
 
-        CONTENT.addEventListener("click", handleArticleListButtonClick);
+        CONTENT.querySelectorAll(".more-info-button").forEach(function (MORE_INFO_BUTTON) {
+            MORE_INFO_BUTTON.addEventListener("click", handleArticleListButtonClick);
+        });
+        if (user != null) {
+            CONTENT.querySelectorAll(".edit-button").forEach(function (EDIT_BUTTON) {
+                EDIT_BUTTON.addEventListener("click", handleArticleEditButtonClick);
+            });
+            CONTENT.querySelectorAll(".delete-button").forEach(function (DELETE_BUTTON) {
+                DELETE_BUTTON.addEventListener("click", handleArticleDeleteButtonClick);
+            });
+        }
+
         document.addEventListener("click", handleMainButtonClick);
 
         MAIN_BLOCK.appendChild(renderFiltersBar());
 
         MAIN_BLOCK.appendChild(PAGINATOR_TEMPLATE.content.querySelector(".paginator").cloneNode(true));
         PAGINATOR = document.querySelector(".paginator");
-        if (articlesModule.numberOfArticles() > ARTICLES_INDEX_TO) {
-            PAGINATOR.appendChild(NEXT_BUTTON_TEMPLATE.content.querySelector(".pagination-next-button").cloneNode(true));
-        }
         if (ARTICLES_INDEX_FROM > 0) {
             PAGINATOR.appendChild(PREV_BUTTON_TEMPLATE.content.querySelector(".pagination-prev-button").cloneNode(true));
+        }
+        if (articlesModule.numberOfArticles() > ARTICLES_INDEX_TO) {
+            PAGINATOR.appendChild(NEXT_BUTTON_TEMPLATE.content.querySelector(".pagination-next-button").cloneNode(true));
         }
         PAGINATOR.addEventListener("click", handlePaginatorClick);
 
@@ -796,8 +811,16 @@ let newsPageRenderer = (function () {
 
         const ARTICLE_BUTTONS = ARTICLE_TEMPLATE.content.querySelector(".article-buttons");
         const TEMPLATE_FULL_VIEW_BUTTON = document.querySelector("#template-full-view-button");
+        const TEMPLATE_EDIT_BUTTON = document.querySelector("#template-edit-button");
+        const TEMPLATE_DELETE_BUTTON = document.querySelector("#template-delete-button");
         ARTICLE_BUTTONS.innerHTML = "";
-        ARTICLE_BUTTONS.appendChild(TEMPLATE_FULL_VIEW_BUTTON.content.querySelector(".button").cloneNode(true));
+        ARTICLE_BUTTONS.appendChild(TEMPLATE_FULL_VIEW_BUTTON.content.querySelector(".more-info-button").cloneNode(true));
+        if (user != null) {
+            const TEMPLATE_EDIT_BUTTON = document.querySelector("#template-edit-button");
+            const TEMPLATE_DELETE_BUTTON = document.querySelector("#template-delete-button");
+            ARTICLE_BUTTONS.appendChild(TEMPLATE_EDIT_BUTTON.content.querySelector(".edit-button").cloneNode(true));
+            ARTICLE_BUTTONS.appendChild(TEMPLATE_DELETE_BUTTON.content.querySelector(".delete-button").cloneNode(true));
+        }
 
         let tagsNodes = renderTags(article.tags);
         tagsNodes.forEach(function (node) {
@@ -902,15 +925,16 @@ let articleFullViewRenderer = (function () {
     const TAGS_LIST_NODE = ARTICLE_TEMPLATE.content.querySelector(".article-tags");
     const ARTICLE_TAGS_TEMPLATE = document.querySelector("#template-article-tags");
 
-
     function renderFullArticle(id) {
         MAIN_BLOCK.innerHTML = "";
         let article = createArticle(id);
         MAIN_BLOCK.innerHTML = "<div class=\"full-article\"></div>\n";
         const CONTENT = document.querySelector(".full-article");
         CONTENT.appendChild(article);
-        document.querySelector(".edit-button").addEventListener("click", handleArticleEditButtonClick);
-        document.querySelector(".delete-button").addEventListener("click", handleArticleDeleteButtonClick);
+        if (user != null) {
+            document.querySelector(".edit-button").addEventListener("click", handleArticleEditButtonClick);
+            document.querySelector(".delete-button").addEventListener("click", handleArticleDeleteButtonClick);
+        }
     }
 
     function createArticle(id) {
@@ -956,15 +980,6 @@ let articleFullViewRenderer = (function () {
         return template.content.querySelector(".tags").cloneNode(true);
     }
 
-    function handleArticleEditButtonClick() {
-        editPageRenderer.renderEditPage(document.querySelector(".article-item").dataset.id);
-    }
-
-    function handleArticleDeleteButtonClick() {
-        articlesModule.hideArticle(document.querySelector(".article-item").dataset.id);
-        renderArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO, getCurrentFilters());
-    }
-
     return {
         renderFullArticle: renderFullArticle
     }
@@ -973,19 +988,30 @@ let articleFullViewRenderer = (function () {
 let editPageRenderer = (function () {
     const MAIN_BLOCK = document.querySelector(".main-block");
     const EDIT_FORM_TEMPLATE = document.querySelector("#template-edit-form");
+    const TAGS_DATALIST = EDIT_FORM_TEMPLATE.content.querySelector("#edit-form-tags-options");
+    const TAGS_LIST = EDIT_FORM_TEMPLATE.content.querySelector(".edit-form-tags-list");
+    const FILTER_TAG_TEMPLATE = document.querySelector("#template-filter-tag");
+    const OPTION_TEMPLATE = document.querySelector("#template-option");
     let article = {};
 
     function renderEditPage(id) {
         MAIN_BLOCK.innerHTML = "";
-        if (id != null || id != undefined) {
-            MAIN_BLOCK.appendChild(loadExistentArticle(id));
+        if (id != null && id != undefined) {
+            MAIN_BLOCK.appendChild(renderExistentArticle(id));
         } else {
-            MAIN_BLOCK.appendChild(loadNewArticle());
+            MAIN_BLOCK.appendChild(renderNewArticle());
         }
+        document.querySelector(".add-tag-small-button").addEventListener("click", handleAddTagButtonClick);
+        document.querySelectorAll(".filter-tags").forEach(function (tag) {
+            tag.addEventListener("click", handleChosenTagClick);
+        });
         document.querySelector(".add-article-button-block").addEventListener("click", handleAddChangeArticleConfirmClick);
     }
 
-    function loadExistentArticle(id) {
+    function renderExistentArticle(id) {
+        let tags = JSON.parse(localStorage.getItem("tags"));
+        TAGS_DATALIST.innerHTML = "";
+        TAGS_LIST.innerHTML = "";
         article = articlesModule.getArticle(id);
         EDIT_FORM_TEMPLATE.content.querySelector(".id-edit").textContent = article.id;
         EDIT_FORM_TEMPLATE.content.querySelector(".author-edit").textContent = article.author;
@@ -994,10 +1020,23 @@ let editPageRenderer = (function () {
         EDIT_FORM_TEMPLATE.content.querySelector("#summary-input").textContent = article.summary;
         EDIT_FORM_TEMPLATE.content.querySelector("#content-input").textContent = article.content;
         EDIT_FORM_TEMPLATE.content.querySelector(".confirm-article-button").textContent = "Принять изменения";
+        if (tags != undefined) {
+            tags.forEach(function (tag) {
+                OPTION_TEMPLATE.content.querySelector(".option").value = tag;
+                TAGS_DATALIST.appendChild(OPTION_TEMPLATE.content.querySelector(".option").cloneNode(true));
+            });
+        }
+        article.tags.forEach(function (tag) {
+            FILTER_TAG_TEMPLATE.content.querySelector(".filter-tags").textContent = tag;
+            TAGS_LIST.appendChild(FILTER_TAG_TEMPLATE.content.querySelector(".tags-list-element").cloneNode(true));
+        });
         return EDIT_FORM_TEMPLATE.content.querySelector(".edit-form").cloneNode(true);
     }
 
-    function loadNewArticle() {
+    function renderNewArticle() {
+        let tags = JSON.parse(localStorage.getItem("tags"));
+        TAGS_DATALIST.innerHTML = "";
+        TAGS_LIST.innerHTML = "";
         article.tags = [];
         EDIT_FORM_TEMPLATE.content.querySelector(".id-edit").textContent = (JSON.parse(localStorage.getItem("articles")).length + 1);
         EDIT_FORM_TEMPLATE.content.querySelector(".author-edit").textContent = user;
@@ -1006,7 +1045,54 @@ let editPageRenderer = (function () {
         EDIT_FORM_TEMPLATE.content.querySelector("#summary-input").textContent = "";
         EDIT_FORM_TEMPLATE.content.querySelector("#content-input").textContent = "";
         EDIT_FORM_TEMPLATE.content.querySelector(".confirm-article-button").textContent = "Добавить новость в ленту";
+        if (tags != undefined) {
+            tags.forEach(function (tag) {
+                OPTION_TEMPLATE.content.querySelector(".option").value = tag;
+                TAGS_DATALIST.appendChild(OPTION_TEMPLATE.content.querySelector(".option").cloneNode(true));
+            });
+        }
         return EDIT_FORM_TEMPLATE.content.querySelector(".edit-form").cloneNode(true);
+    }
+
+    function handleAddTagButtonClick() {
+        const TAGS_LIST = document.querySelector(".edit-form-tags-list");
+        const FILTER_TAG_TEMPLATE = document.querySelector("#template-filter-tag");
+        let tags = JSON.parse(localStorage.getItem("tags"));
+        let tag = document.forms.edit.elements.tagsInput.value.toLowerCase();
+        if (article.tags.length < 5 && article.tags.indexOf(tag) == -1) {
+            if (tags.indexOf(tag) == -1) {
+                tags.push(tag);
+                localStorage.setItem("tags", JSON.stringify(tags));
+            }
+            article.tags.push(tag);
+            document.forms.edit.elements.tagsInput.value = "";
+            TAGS_LIST.innerHTML = "";
+            article.tags.forEach(function (tag) {
+                FILTER_TAG_TEMPLATE.content.querySelector(".filter-tags").textContent = tag;
+                TAGS_LIST.appendChild(FILTER_TAG_TEMPLATE.content.querySelector(".tags-list-element").cloneNode(true));
+            });
+            document.querySelectorAll(".filter-tags").forEach(function (tag) {
+                tag.addEventListener("click", handleChosenTagClick);
+            });
+        } else {
+            alert("Невозможно добавить тег!");
+        }
+    }
+
+    function handleChosenTagClick(event) {
+        const TAGS_LIST = document.querySelector(".edit-form-tags-list");
+        const FILTER_TAG_TEMPLATE = document.querySelector("#template-filter-tag");
+        article.tags.splice(article.tags.indexOf(event.target.textContent), 1);
+        TAGS_LIST.innerHTML = "";
+        if (article.tags.length > 0) {
+            article.tags.forEach(function (tag) {
+                FILTER_TAG_TEMPLATE.content.querySelector(".filter-tags").textContent = tag;
+                TAGS_LIST.appendChild(FILTER_TAG_TEMPLATE.content.querySelector(".tags-list-element").cloneNode(true));
+            });
+            document.querySelectorAll(".filter-tags").forEach(function (tag) {
+                tag.addEventListener("click", handleChosenTagClick);
+            });
+        }
     }
 
     function handleAddChangeArticleConfirmClick() {
@@ -1016,16 +1102,14 @@ let editPageRenderer = (function () {
         article.title = document.querySelector("#title-input").value;
         article.summary = document.querySelector("#summary-input").value;
         article.content = document.querySelector("#content-input").value;
-        if (articlesModule.validateEditArticle(article)) {
-            if (articlesModule.getArticle(article.id) != undefined) {
-                articlesModule.editArticle(article.id, article);
-            } else {
-                articlesModule.addArticle(article);
-            }
-            renderArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO, getCurrentFilters());
+        article.isHidden = false;
+
+        if (articlesModule.getArticle(article.id) != undefined) {
+            articlesModule.editArticle(article.id, article);
         } else {
-            alert("Некорректная новость!");
+            articlesModule.addArticle(article);
         }
+        renderArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO, getCurrentFilters());
     }
 
     return {
@@ -1043,21 +1127,6 @@ function renderArticles(skip, top, filter) {
     let articles = articlesModule.getArticles(skip, top, filter);
 
     newsPageRenderer.renderNewsPage(articles);
-}
-
-function addArticle(article) {
-    articlesModule.addArticle(article);
-    renderArticles(0, 25);
-}
-
-function removeArticle(removeID) {
-    articlesModule.removeArticle(removeID);
-    renderArticles(0, 25);
-}
-
-function editArticle(editID, newArticle) {
-    articlesModule.editArticle(editID, newArticle);
-    renderArticles(0, 25);
 }
 
 function changeCurrentUser(userName) {
@@ -1114,6 +1183,19 @@ function getCurrentFilters() {
         }
         return value;
     });
+}
+
+function handleArticleEditButtonClick() {
+    if (event.target.textContent == "Редактировать") {
+        editPageRenderer.renderEditPage(event.target.parentNode.parentNode.dataset.id);
+    }
+}
+
+function handleArticleDeleteButtonClick() {
+    if (event.target.textContent == "Удалить") {
+        articlesModule.hideArticle(event.target.parentNode.parentNode.dataset.id);
+        renderArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO, getCurrentFilters());
+    }
 }
 
 function handlePaginatorClick(event) {
