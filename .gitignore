@@ -5,3 +5,5 @@ out/
 node_modules/
 runServer.bat
 container.txt
+commands.txt
+.eslintrc.json
