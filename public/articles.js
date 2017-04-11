@@ -573,6 +573,7 @@ const editPageRenderer = (function () {
   }
 
   function renderExistentArticle(id) {
+    article = {};
     let tags;
     loadTags();
     function loadTags() {
@@ -616,6 +617,7 @@ const editPageRenderer = (function () {
   }
 
   function renderNewArticle() {
+    article = {};
     let tags;
     loadTags();
     function loadTags() {
@@ -745,6 +747,7 @@ const editPageRenderer = (function () {
   function handleAddChangeArticleConfirmClick() {
     article.id = document.querySelector('.id-edit').textContent;
     article.author = document.querySelector('.author-edit').textContent;
+    console.log(article.createdAt);
     article.createdAt = article.createdAt || new Date();
     article.title = document.querySelector('#title-input').value;
     article.summary = document.querySelector('#summary-input').value;
