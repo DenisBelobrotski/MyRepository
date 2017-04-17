@@ -448,7 +448,7 @@ section h3 {
     padding: 0 25px;
     background: #92d36e;
     text-align: center;
-    margin: 10px 10px 30%;
+    margin: 10px 20px 30%;
 }
 
 .login-button:hover {
@@ -458,7 +458,7 @@ section h3 {
 }
 
 .authorization-input-section {
-    margin-left: 10px;
+    margin-left: 20px;
 }
 
 .authorization-input-section input {
@@ -486,6 +486,14 @@ section h3 {
     box-shadow: inset 100px 100px 120px #689e4f;
     color: #ffffff;
     border: none;
+}
+
+/*ERROR*/
+
+.error-block {
+    margin-left: 20px;
+    margin-bottom: 35%;
+    font-size: 20px;
 }
 
 /*FOOTER*/
