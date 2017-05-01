@@ -1,7 +1,11 @@
 const express = require('express');
 
-const app = express();
 const bodyParser = require('body-parser');
+
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+
+const app = express();
 
 const articles = [
     {
@@ -508,35 +512,62 @@ const users = [
     },
 ];
 
+passport.use(new LocalStrategy({
+    usernameField: 'username',
+    passwordField: 'password',
+    session: false,
+}, (username, password, done) => {
+    const user = users.find(userCur => userCur.login === username);
+    if (!user || user.password !== password) {
+        done(null, false);
+    } else {
+        done(null, user);
+    }
+}));
+
+passport.serializeUser((user, done) => done(null, user.login));
+
+passport.deserializeUser((username, done) => {
+    const user = users.find(userCur => userCur.login === username);
+    if (user) {
+        done(null, user);
+    } else {
+        done(null, false);
+    }
+});
+
+
 app.set('port', (process.env.PORT || 8841));
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(passport.initialize());
 
 app.get('/user', (req, res) => {
-    if (req.query.login) {
-        return res.json(users.find(user => req.query.login === user.login));
-    }
     res.json(users);
 });
 
 app.get('/article', (req, res) => {
-    if (req.query.id) {
-        return res.json(articles.find(article => Number(req.query.id) === article.id));
-    }
     res.json(articles);
+});
+
+app.get('/article/:id', (req, res) => {
+    res.json(articles.find(article => Number(req.query.id) === article.id));
 });
 
 app.get('/tags', (req, res) => {
     if (req.query.tag) {
-        return res.json(tags.find(tag => req.query.tag === tag));
+        res.json(tags.find(tag => req.query.tag === tag));
+    } else {
+        res.json(tags);
     }
-    res.json(tags);
 });
 
 app.get('/length', (req, res) => {
     res.json(articles.length);
 });
+
+app.get('/login', (req, res) => res.json(null));
 
 app.post('/article', (req, res) => {
     articles.push(req.body);
@@ -552,9 +583,11 @@ app.post('/tag', (req, res) => {
     res.json(tags);
 });
 
+app.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), (req, res) => res.json(req.user.login));
+
 app.put('/article', (req, res) => {
     const articleIndex = articles.findIndex(article => req.body.id === article.id);
-    if (req.body.summary) {
+    if (req.body.title) {
         articles[articleIndex].title = req.body.title;
     }
     if (req.body.summary) {

@@ -178,7 +178,6 @@ hgroup h2 {
 
 .content header h2, .full-article header h2 {
     font: 24px/24px Arial, Helvetica, sans-serif;
-
 }
 
 .content article, .full-article article {
@@ -199,6 +198,14 @@ hgroup h2 {
     font-size: 16px;
     font-style: italic;
     padding-top: 15px;
+}
+
+.article-summary {
+    font-size: 14px;
+}
+
+.article-content {
+    font-size: 14px;
 }
 
 .clearfix:after {

@@ -3,7 +3,7 @@ let ARTICLES_INDEX_FROM = 0;
 let ARTICLES_INDEX_TO = 10;
 
 const httpRequests = (function () {
-    function httpGet(url) {
+    function httpGet(path) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
 
@@ -24,17 +24,17 @@ const httpRequests = (function () {
             }
 
             xhr.addEventListener('load', loadHandler);
-            xhr.open('GET', url);
+            xhr.open('GET', path);
             xhr.send();
         });
     }
 
-    function httpPostTag(tag) {
+    function httpPost(path, value) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', '/tag');
+            xhr.open('POST', path);
             xhr.setRequestHeader('content-type', 'application/json');
-            xhr.send(JSON.stringify({tag}));
+            xhr.send(value);
             xhr.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
                     resolve(this.responseText);
@@ -48,31 +48,12 @@ const httpRequests = (function () {
         });
     }
 
-    function httpPostArticle(article) {
+    function httpPut(path, value) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', '/article');
+            xhr.open('PUT', path);
             xhr.setRequestHeader('content-type', 'application/json');
-            xhr.send(JSON.stringify(article));
-            xhr.onload = function () {
-                if (this.status >= 200 && this.status < 300) {
-                    resolve(this.responseText);
-                } else {
-                    reject({
-                        status: this.status,
-                        statusText: xhr.statusText,
-                    });
-                }
-            };
-        });
-    }
-
-    function httpPutArticle(article) {
-        return new Promise((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.open('PUT', '/article');
-            xhr.setRequestHeader('content-type', 'application/json');
-            xhr.send(JSON.stringify(article));
+            xhr.send(JSON.stringify(value));
             xhr.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
                     resolve(this.responseText);
@@ -90,7 +71,7 @@ const httpRequests = (function () {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
             const article = articlesModule.getArticle(id);
-            if (confirm(`Удалить новость: ${article.title}?`)) {
+            if (confirm(`Удалить новость: "${article.title}"?`)) {
                 xhr.open('DELETE', '/article');
                 xhr.setRequestHeader('content-type', 'application/json');
                 xhr.send(JSON.stringify({id}));
@@ -110,9 +91,8 @@ const httpRequests = (function () {
 
     return {
         httpGet,
-        httpPostTag,
-        httpPostArticle,
-        httpPutArticle,
+        httpPost,
+        httpPut,
         httpDeleteArticle,
     };
 }());
@@ -630,7 +610,7 @@ const editPageRenderer = (function () {
             if (tags.indexOf(tag) === -1) {
                 tags.push(tag);
             }
-            httpRequests.httpPostTag(tag).then(() => {
+            httpRequests.httpPost('/tag', JSON.stringify({tag})).then(() => {
                 article.tags.push(tag);
                 document.forms.edit.elements.tagsInput.value = '';
                 TAGS_LIST.innerHTML = '';
@@ -678,14 +658,14 @@ const editPageRenderer = (function () {
             articlesModule.setTags(JSON.parse(result));
             if (articlesModule.validateArticle(article)) {
                 if (articlesModule.getArticle(article.id)) {
-                    httpRequests.httpPutArticle(article).then(() => {
+                    httpRequests.httpPut('/article', article).then(() => {
                         articlesModule.resetArticles();
                         renderArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO, getCurrentFilters());
                     }).catch((error) => {
                         errorPage.renderErrorPage('Ошибка загрузки с сервера.');
                     });
                 } else {
-                    httpRequests.httpPostArticle(article).then(() => {
+                    httpRequests.httpPost('/article', JSON.stringify(article)).then(() => {
                         articlesModule.resetArticles();
                         renderArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO, getCurrentFilters());
                     }).catch((error) => {
@@ -821,15 +801,17 @@ const authorizationPage = (function () {
     }
 
     function handleLoginButtonClick() {
-        httpRequests.httpGet('/user').then((result) => {
-            const users = JSON.parse(result);
-            const userFind = users.find(userInfo => userInfo.login === document.forms[0].elements[0].value);
-            if (userFind !== undefined && userFind.password === document.forms[0].elements[1].value) {
-                user = userFind.login;
-                sessionStorage.setItem('user', JSON.stringify(user));
+        const currentUser = {
+            username: document.forms[0].elements[0].value,
+            password: document.forms[0].elements[1].value
+        };
+        httpRequests.httpPost('/login', JSON.stringify(currentUser)).then((result) => {
+            user = JSON.parse(result);
+            if (user) {
+                sessionStorage.setItem('user', result);
                 renderArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO, getCurrentFilters());
             } else {
-                alert('Неверный логин или пароль!');
+                alert('Неверный логин или пароль.');
             }
         }).catch((error) => {
             errorPage.renderErrorPage('Ошибка загрузки с сервера.');
