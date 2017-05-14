@@ -4,6 +4,9 @@
 out/
 node_modules/
 runServer.bat
+runMongo.bat
+runMongod.bat
+runMongoExport.bat
 container.txt
 commands.txt
 .eslintrc.json

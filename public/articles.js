@@ -128,14 +128,11 @@ const articlesModule = (function () {
     function getArticle(findId) {
         resetArticles();
 
-        return articles.filter(currentElement => currentElement.id === findId)[0];
+        return articles.filter(currentElement => currentElement._id === findId)[0];
     }
 
     function validateArticle(article) {
-        if (article.id &&
-            (typeof (article.id) !== 'string' || article.id.length === 0) && articles.filter(element => element.id === article.id).length !== 0) {
-            return false;
-        } else if (article.title &&
+        if (article.title &&
             (typeof (article.title) !== 'string' || article.title.length > 100 || article.title.length === 0)) {
             return false;
         } else if (article.tags &&
@@ -247,7 +244,7 @@ const newsPageRenderer = (function () {
             MORE_INFO_BUTTON.addEventListener('click', handleArticleListButtonClick);
         });
 
-        if (user != null) {
+        if (user) {
             CONTENT.querySelectorAll('.edit-button').forEach((EDIT_BUTTON) => {
                 EDIT_BUTTON.addEventListener('click', handleArticleEditButtonClick);
             });
@@ -299,11 +296,11 @@ const newsPageRenderer = (function () {
         AUTHORS_DATALIST.innerHTML = '';
         TAGS_DATALIST.innerHTML = '';
         TAGS_LIST.innerHTML = '';
-        if (filters && filters != null) {
+        if (filters) {
             FILTERS_TEMPLATE.content.querySelector('.date-from').value =
-                (filters.dateFrom && filters.dateFrom != null) ? formatFilterDate(filters.dateFrom) : '';
+                (filters.dateFrom) ? formatFilterDate(filters.dateFrom) : '';
             FILTERS_TEMPLATE.content.querySelector('.date-to').value =
-                (filters.dateTo && filters.dateTo != null) ? formatFilterDate(filters.dateTo) : '';
+                (filters.dateTo) ? formatFilterDate(filters.dateTo) : '';
             FILTERS_TEMPLATE.content.querySelector('.author-input').value = (filters.author) ? filters.author : '';
             if (filters.tags) {
                 filters.tags.forEach((tag) => {
@@ -338,7 +335,7 @@ const newsPageRenderer = (function () {
     }
 
     function renderArticle(article) {
-        ARTICLE_TEMPLATE.content.querySelector('.article-item').dataset.id = article.id;
+        ARTICLE_TEMPLATE.content.querySelector('.article-item').dataset.id = article._id;
         ARTICLE_TEMPLATE.content.querySelector('.article-title').textContent = article.title;
         ARTICLE_TEMPLATE.content.querySelector('.article-author').textContent = article.author;
         ARTICLE_TEMPLATE.content.querySelector('.article-date').textContent = articlesModule.formatArticleDate(article.createdAt);
@@ -351,7 +348,7 @@ const newsPageRenderer = (function () {
         const TEMPLATE_FULL_VIEW_BUTTON = document.querySelector('#template-full-view-button');
         ARTICLE_BUTTONS.innerHTML = '';
         ARTICLE_BUTTONS.appendChild(TEMPLATE_FULL_VIEW_BUTTON.content.querySelector('.more-info-button').cloneNode(true));
-        if (user != null) {
+        if (user) {
             const TEMPLATE_EDIT_BUTTON = document.querySelector('#template-edit-button');
             const TEMPLATE_DELETE_BUTTON = document.querySelector('#template-delete-button');
             ARTICLE_BUTTONS.appendChild(TEMPLATE_EDIT_BUTTON.content.querySelector('.edit-button').cloneNode(true));
@@ -471,7 +468,7 @@ const articleFullViewRenderer = (function () {
         MAIN_BLOCK.innerHTML = '<div class="full-article"></div>\n';
         const CONTENT = document.querySelector('.full-article');
         CONTENT.appendChild(article);
-        if (user != null) {
+        if (user) {
             document.querySelector('.edit-button').addEventListener('click', handleArticleEditButtonClick);
             document.querySelector('.delete-button').addEventListener('click', handleArticleDeleteButtonClick);
         }
@@ -479,7 +476,7 @@ const articleFullViewRenderer = (function () {
 
     function createArticle(id) {
         const article = articlesModule.getArticle(id);
-        ARTICLE_TEMPLATE.content.querySelector('.article-item').dataset.id = article.id;
+        ARTICLE_TEMPLATE.content.querySelector('.article-item').dataset.id = article._id;
         ARTICLE_TEMPLATE.content.querySelector('.article-title').textContent = article.title;
         ARTICLE_TEMPLATE.content.querySelector('.article-summary-container').innerHTML = '';
         ARTICLE_TEMPLATE.content.querySelector('.article-author').textContent = article.author;
@@ -531,16 +528,14 @@ const editPageRenderer = (function () {
     const OPTION_TEMPLATE = document.querySelector('#template-option');
     let article = {};
     let tags;
-    let articlesLength;
 
     function renderEditPage(id) {
         MAIN_BLOCK.innerHTML = '';
-        Promise.all([httpRequests.httpGet('/length'), httpRequests.httpGet('/tags')]).then((values) => {
-            tags = JSON.parse(values[1]);
-            if (id != null && id) {
+        httpRequests.httpGet('/tags').then((value) => {
+            tags = JSON.parse(value);
+            if (id) {
                 MAIN_BLOCK.appendChild(renderExistentArticle(id));
             } else {
-                articlesLength = JSON.parse(values[0]);
                 MAIN_BLOCK.appendChild(renderNewArticle());
             }
             document.querySelector('.add-tag-small-button').addEventListener('click', handleAddTagButtonClick);
@@ -558,7 +553,7 @@ const editPageRenderer = (function () {
         TAGS_DATALIST.innerHTML = '';
         TAGS_LIST.innerHTML = '';
         article = articlesModule.getArticle(id);
-        EDIT_FORM_TEMPLATE.content.querySelector('.id-edit').textContent = article.id;
+        EDIT_FORM_TEMPLATE.content.querySelector('.id-edit').textContent = article._id;
         EDIT_FORM_TEMPLATE.content.querySelector('.author-edit').textContent = article.author;
         EDIT_FORM_TEMPLATE.content.querySelector('.date-edit').textContent = articlesModule.formatArticleDate(article.createdAt);
         EDIT_FORM_TEMPLATE.content.querySelector('#title-input').textContent = article.title;
@@ -584,7 +579,7 @@ const editPageRenderer = (function () {
         TAGS_DATALIST.innerHTML = '';
         TAGS_LIST.innerHTML = '';
         article.tags = [];
-        EDIT_FORM_TEMPLATE.content.querySelector('.id-edit').textContent = (articlesLength + 1);
+        EDIT_FORM_TEMPLATE.content.querySelector('.id-edit').textContent = "id будет присвоен во время загрузки новости на сервер";
         EDIT_FORM_TEMPLATE.content.querySelector('.author-edit').textContent = user;
         EDIT_FORM_TEMPLATE.content.querySelector('.date-edit').textContent = articlesModule.formatArticleDate(new Date());
         EDIT_FORM_TEMPLATE.content.querySelector('#title-input').textContent = '';
@@ -646,7 +641,7 @@ const editPageRenderer = (function () {
     }
 
     function handleAddChangeArticleConfirmClick() {
-        article.id = document.querySelector('.id-edit').textContent;
+        //article._id = document.querySelector('.id-edit').textContent;
         article.author = document.querySelector('.author-edit').textContent;
         article.createdAt = article.createdAt || new Date();
         article.title = document.querySelector('#title-input').value;
@@ -657,7 +652,7 @@ const editPageRenderer = (function () {
         httpRequests.httpGet('/tags').then((result) => {
             articlesModule.setTags(JSON.parse(result));
             if (articlesModule.validateArticle(article)) {
-                if (articlesModule.getArticle(article.id)) {
+                if (articlesModule.getArticle(article._id)) {
                     httpRequests.httpPut('/article', article).then(() => {
                         articlesModule.resetArticles();
                         renderArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO, getCurrentFilters());
@@ -708,7 +703,7 @@ function renderHeader() {
     const LOGIN_LOGOUT_BUTTON_TEMPLATE = document.querySelector('#template-login-logout-button');
     const USER_NAME = document.querySelector('.user-name');
 
-    if (user == null) {
+    if (!user) {
         USER_NAME.textContent = 'Гость';
         NAVIGATION_BUTTONS.innerHTML = '';
         NAVIGATION_BUTTONS.appendChild(MAIN_PAGE_BUTTON_TEMPLATE.content.querySelector('.navigation-button').cloneNode(true));
