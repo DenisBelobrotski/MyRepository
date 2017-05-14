@@ -90,7 +90,7 @@ app.post('/article', (req, res) => {
 });
 
 app.post('/tag', (req, res) => {
-    mongodb.addTag(req.body.tag).then((result) => {
+    mongodb.addTag(req.body).then((result) => {
         res.json(result);
     }).catch((err) => {
         console.log(err);

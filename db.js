@@ -41,7 +41,7 @@ function addArticle(article) {
 }
 
 function addTag(tag) {
-    return mongodb.collection('tags').updateOne({ tag: tag }, { tag: tag }, { upsert: true });
+    return mongodb.collection('tags').updateOne(tag, tag, { upsert: true });
 }
 
 function changeArticleById(id, article) {
