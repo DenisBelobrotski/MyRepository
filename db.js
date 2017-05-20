@@ -1,53 +1,79 @@
-const MongoClient = require('mongodb').MongoClient;
+const mongoose = require('mongoose');
 const ObjectID = require('mongodb').ObjectID;
 
 let mongodb;
 
+const ArticleSchema = mongoose.Schema({
+    title: String,
+    summary: String,
+    createdAt: Date,
+    author: String,
+    tags: Array,
+    content: String,
+    isHidden: Boolean,
+});
+const TagSchema = mongoose.Schema({
+    tag: String,
+});
+const UserSchema = mongoose.Schema({
+    login: String,
+    password: String,
+});
+
+const Articles = mongoose.model('articles', ArticleSchema);
+const Tags = mongoose.model('tags', TagSchema);
+const Users = mongoose.model('users', UserSchema);
+
 function connect(url, run) {
-    if (mongodb) {
+    mongoose.connect(url);
+    mongodb = mongoose.connection;
+    mongodb.on('error', () => console.log('error'));
+    mongodb.once('open', () => {
+        console.log('Connected to database');
         run();
-    } else {
-        MongoClient.connect(url).then((db) => {
-            mongodb = db;
-            run();
-        }).catch((err) => {
-            run(err);
-        })
-    }
+    });
 }
 
 function getArticles() {
-    return mongodb.collection('articles').find();
+    return Articles.find();
 }
 
 function getUsers() {
-    return mongodb.collection('users').find();
+    return Users.find();
 }
 
 function getTags() {
-    return mongodb.collection('tags').find();
+    return Tags.find();
 }
 
 function getUserByName(name) {
-    return mongodb.collection('users').findOne({ login: name });
+    return Users.findOne({ login: name });
 }
 
 function getArticleById(id) {
-    return mongodb.collection('articles').findOne({ _id: new ObjectID(id) });
+    return Articles.findOne({ _id: new ObjectID(id) });
 }
 
 function addArticle(article) {
-    return mongodb.collection('articles').insertOne(article);
+    return Articles.create(article);
 }
 
 function addTag(tag) {
-    return mongodb.collection('tags').updateOne(tag, tag, { upsert: true });
+    return Tags.create(tag);
+}
+
+function addUser(user) {
+    return Users.create(user);
+}
+
+function findTag(tag) {
+    return Tags.findOne(tag);
 }
 
 function changeArticleById(id, article) {
     const tmpId = new ObjectID(id);
     article._id = tmpId;
-    return mongodb.collection('articles').updateOne({ _id: tmpId }, article);
+    return Articles.update({ _id: tmpId }, article);
 }
 
 module.exports = {
@@ -59,6 +85,8 @@ module.exports = {
     getArticleById,
     addArticle,
     addTag,
+    findTag,
+    addUser,
     changeArticleById,
     ObjectID
 };

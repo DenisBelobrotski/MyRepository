@@ -12,7 +12,6 @@ const mongodb = require('./db');
 passport.use(new LocalStrategy({
     usernameField: 'username',
     passwordField: 'password',
-    session: false,
 }, (username, password, done) => {
     mongodb.getUserByName(username).then((user) => {
         if (!user || user.password !== password) {
@@ -39,7 +38,6 @@ passport.deserializeUser((username, done) => {
     })
 });
 
-
 app.set('port', (process.env.PORT || 8841));
 app.use(express.static('public'));
 app.use(bodyParser.json());
@@ -47,16 +45,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 
 app.get('/user', (req, res) => {
-    mongodb.getUsers().toArray().then((result) => {
-        res.json(result);
+    mongodb.getUsers().then((result) => {
+        res.json(result.sort((a, b) => a.login.toLowerCase().localeCompare(b.login.toLowerCase())));
     }).catch((err) => {
         console.log(err);
     });
 });
 
 app.get('/article', (req, res) => {
-    mongodb.getArticles().toArray().then((result) => {
-        res.json(result);
+    mongodb.getArticles().then((result) => {
+        res.json(result.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()));
     }).catch((err) => {
         console.log(err);
     });
@@ -72,8 +70,8 @@ app.get('/article/:id', (req, res) => {
 });
 
 app.get('/tags', (req, res) => {
-    mongodb.getTags().toArray().then((result) => {
-        res.json((result.map((value) => value.tag)).sort());
+    mongodb.getTags().then((result) => {
+        res.json((result.map((value) => value.tag)).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())));
     }).catch((err) => {
         console.log(err);
     });
@@ -90,8 +88,22 @@ app.post('/article', (req, res) => {
 });
 
 app.post('/tag', (req, res) => {
-    mongodb.addTag(req.body).then((result) => {
-        res.json(result);
+    mongodb.getTags().then((result) => {
+        let findTag = req.body.tag;
+        let tags = result.map((value) => value.tag);
+        if (tags.indexOf(findTag) === -1) {
+            mongodb.addTag(req.body).then((result) => {
+                res.json(result);
+            }).catch((err) => {
+                console.log(err);
+            });
+        } else {
+            mongodb.findTag(req.body).then((result) => {
+                res.json(result);
+            }).catch((err) => {
+                console.log(err);
+            })
+        }
     }).catch((err) => {
         console.log(err);
     });

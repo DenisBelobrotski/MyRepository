@@ -119,7 +119,6 @@ const articlesModule = (function () {
                 resultArticles = resultArticles.filter(currentElement => filterConfig.tags.every(tag => currentElement.tags.indexOf(tag) >= 0));
             }
         }
-        resultArticles.sort((firstArticle, secondArticle) => secondArticle.createdAt.getTime() - firstArticle.createdAt.getTime());
         articles = resultArticles;
 
         return resultArticles.slice(from, from + amount);

@@ -1,4 +1,4 @@
-{"_id":{"$oid":"591816093ef5293480362076"},"login":"DenisBelobrotski","password":"1111"}
-{"_id":{"$oid":"591816093ef5293480362077"},"login":"DenisBelobrotskiy","password":"2222"}
-{"_id":{"$oid":"591816093ef5293480362078"},"login":"admin","password":"admin"}
-{"_id":{"$oid":"591816093ef5293480362079"},"login":"0d/\\/\\iN","password":"trueProger228"}
+{"_id":{"$oid":"5920c4dfab1ca007ec13f492"},"login":"DenisBelobrotski","password":"1111","__v":0}
+{"_id":{"$oid":"5920c4dfab1ca007ec13f493"},"login":"DenisBelobrotskiy","password":"2222","__v":0}
+{"_id":{"$oid":"5920c4dfab1ca007ec13f494"},"login":"admin","password":"admin","__v":0}
+{"_id":{"$oid":"5920c4dfab1ca007ec13f495"},"login":"0d/\\/\\iN","password":"trueProger228","__v":0}
