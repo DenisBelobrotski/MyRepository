@@ -1,6 +1,8 @@
 const express = require('express');
+const session = require('express-session');
 
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
@@ -40,9 +42,12 @@ passport.deserializeUser((username, done) => {
 
 app.set('port', (process.env.PORT || 8841));
 app.use(express.static('public'));
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(session({ secret: 'the most secret key' }));
 app.use(passport.initialize());
+app.use(passport.session());
 
 app.get('/user', (req, res) => {
     mongodb.getUsers().then((result) => {
